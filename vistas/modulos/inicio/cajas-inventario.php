@@ -111,7 +111,7 @@ $totalProductos = count($productos);
       
       <h3>ALMACEN 4</h3>
 
-      <p>NO PUEDO MARTHA</p>
+      <p>GUAYAQUIL</p>
     
     </div>
     
