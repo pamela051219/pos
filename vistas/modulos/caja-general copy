@@ -1,0 +1,419 @@
+
+<div class="content-wrapper">
+
+  <section class="content-header">
+    
+    <h1>
+      
+      Administrar caja chica
+    
+    </h1>
+
+    <ol class="breadcrumb">
+      
+      <li><a href="inicio"><i class="fa fa-dashboard"></i> Inicio</a></li>
+      
+      <li class="active">Administrar caja chica</li>
+    
+    </ol>
+
+  </section>
+
+  <section class="content">
+
+    <div class="box">
+
+      <div class="box-header with-border">
+  
+        <button class="btn btn-primary" data-toggle="modal" data-target="#modalAgregarCajaGeneral">
+          
+          Agregar caja chica
+
+        </button>
+
+      </div>
+
+      <div class="box-body">
+        
+       <table class="table table-bordered table-striped dt-responsive tablas" width="100%">
+         
+        <thead>
+         
+         <tr>
+           
+           <th style="width:10px">#</th>
+           <th>Codigo</th>
+           <th>Fecha</th>
+           <th>Valor Apertura</th>
+           <th>Responsable</th>
+           <th>Hora Cierre</th>
+           <th>Monto Cierre </th>
+           <th>Observaciones </th>
+           <th>Acciones</th>
+
+     
+         </tr> 
+
+        </thead>
+
+        <tbody>
+
+        <?php
+
+        $item = null;
+        $valor = null;
+
+        $cajageneral = ControladorCajaGeneral::ctrMostrarCajaGeneral($item, $valor);
+
+       foreach ($cajageneral as $key => $value){
+         
+          echo '<tr>
+                  <td>'.($key+1).'</td>
+                  <td>'.$value["codigo"].'</td>
+                  <td>'.$value["fecha"].'</td>
+                  <td>'.$value["valor_a"].'</td>';                 
+                  
+                  $itemUsuario = "id";
+          
+                  $valorUsuario = $value["usuario"];
+
+                  $respuestaUsuario = ControladorUsuarios::ctrMostrarUsuarios($itemUsuario, $valorUsuario);
+
+                  echo '<td>'.$respuestaUsuario["nombre"].'</td>
+
+                  <td>'.$value["cierre"].'</td>
+                  <td>'.$value["valor_c"].'</td>
+                  <td>'.$value["observaciones"].'</td>';
+
+                  echo '<td>
+
+                  <div class="btn-group">
+                      
+                    <button class="btn btn-warning btnEditarCajaGeneral" idCajaGeneral="'.$value["id"].'" data-toggle="modal" data-target="#modalEditarCajaGeneral"><i class="fa fa-pencil"></i></button>
+
+                  </div>  
+
+                </td>
+
+              </tr>';
+        }
+                              
+
+        ?> 
+
+        </tbody>
+
+       </table>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>
+
+<!--=====================================
+MODAL AGREGAR USUARIO
+======================================-->
+
+<div id="modalAgregarCajaGeneral" class="modal fade" role="dialog">
+  
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+
+      <form role="form" method="post" enctype="multipart/form-data">
+
+        <!--=====================================
+        CABEZA DEL MODAL
+        ======================================-->
+
+        <div class="modal-header" style="background:#3c8dbc; color:white">
+
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+          <h4 class="modal-title">Agregar caja chica</h4>
+
+        </div>
+
+        <!--=====================================
+        CUERPO DEL MODAL
+        ======================================-->
+
+        <div class="modal-body">
+
+          <div class="box-body">
+
+            <!-- ENTRADA PARA EL CODIGO -->
+
+             <div class="form-group">                 
+              <div class="input-group">
+                    
+                <span class="input-group-addon"><i class="fa fa-key"></i></span>
+
+                 <?php
+
+                 $item = null;
+                 $valor = null;
+
+                 $ventas = ControladorCajaGeneral::ctrMostrarCajaGeneral($item, $valor);
+
+                 if(!$ventas){
+
+                 echo '<input type="text" class="form-control" id="nuevaCodigo" name="nuevaCodigo" value="0001" readonly>';
+                  
+
+                 }else{
+
+                 foreach ($ventas as $key => $value) {
+                                                                   
+                 }
+
+                 $codigo = $value["codigo"] + 1;
+
+                 echo '<input type="text" class="form-control " id="nuevaCodigo" name="nuevaCodigo" value="'.$codigo.'" readonly>';
+
+                 }
+
+                 ?>
+                                       
+              </div>              
+             </div>
+
+            <!-- ENTRADA PARA LA FECHA -->
+            
+             <div class="form-group">              
+              <div class="input-group">
+              
+               <span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
+
+               <input type="date" class="form-control input-lg" name="nuevaFecha" placeholder="Ingresar fecha" required>
+
+              </div>
+             </div>
+
+            <!-- ENTRADA PARA VALOR DE APERTURA-->
+
+             <div class="form-group">      
+              <div class="input-group">
+              
+                <span class="input-group-addon"><i class="fa fa-usd"></i></span> 
+
+                <input type="text" class="form-control input-lg" name="nuevoValora" placeholder="Ingresar Valor" id="nuevoValora" value="0" required>
+
+              </div>
+             </div>
+
+            <!-- ENTRADA PARA EL RESPONSABLE -->
+
+             <div class="form-group">          
+              <div class="input-group">
+              
+               <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                  <input type="text" class="form-control" id="nuevoResponsable" name="nuevoResponsable" 
+                  value="<?php echo $_SESSION["nombre"]; ?>" readonly>
+                  <input type="hidden" name="nuevoResponsable" value="<?php echo $_SESSION["id"]; ?>">
+
+              </div>
+             </div>
+            
+            <!-- ENTRADA PARA HORA CIERRE -->
+
+             <div class="form-group"> 
+              <div class="input-group">
+              
+                <span class="input-group-addon"><i class="fa fa-clock-o"></i></span> 
+                <input type="time" class="form-control input-lg" name="nuevaHorac" placeholder="Ingresar hora" >
+
+              </div>
+             </div>
+
+            <!-- ENTRADA PARA VALOR DE CIERRE -->
+            
+             <div class="form-group">              
+              <div class="input-group">
+              
+                <span class="input-group-addon"><i class="fa fa-usd"></i></span> 
+                <input type="text" class="form-control input-lg" name="nuevoValorc" placeholder="Ingresar Valor" id="nuevoValorc" value="0" required>
+
+              </div>
+             </div>
+
+            <!-- ENTRADA PARA OBSERVACIONES -->
+
+             <div class="form-group">             
+              <div class="input-group">
+              
+                <span class="input-group-addon"><i class="fa fa-commenting"></i></span> 
+                <input type="text" class="form-control input-lg" name="nuevoObservacion" placeholder="Observacion" id="nuevoObservacion" >
+
+              </div>
+             </div>
+            
+        <!--=====================================
+        PIE DEL MODAL
+        ======================================-->
+
+        <div class="modal-footer">
+
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
+
+          <button type="submit" class="btn btn-primary">Guardar</button>
+
+        </div>
+        
+        </form>
+
+       <?php
+
+          $crearCajaGeneral = new ControladorCajaGeneral();
+          $crearCajaGeneral -> ctrCrearCajaGeneral();
+
+       ?>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!--=====================================
+MODAL EDITAR USUARIO
+======================================-->
+
+<div id="modalEditarCajaGeneral" class="modal fade" role="dialog" tabindex="-1" aria-labelledby="modalEditarCajaGeneral" aria-hidden="true">
+  
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+
+      <form role="form" method="post">
+
+        <!--=====================================
+        CABEZA DEL MODAL
+        ======================================-->
+
+        <div class="modal-header" style="background:#3c8dbc; color:white">
+
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+          <h4 class="modal-title">Editar usuario</h4>
+
+        </div>
+
+        <!--=====================================
+        CUERPO DEL MODAL
+        ======================================-->
+
+        <div class="modal-body">
+
+          <div class="box-body">
+
+            <!-- ENTRADA PARA LA FECHA -->
+
+            <div class="form-group">
+
+              <div class="input-group">
+
+                <span class="input-group-addon"><i class="fa fa-key"></i></span>
+
+                <input type="text" class="form-control" id="editarCodigo" name="editarCodigo"  >
+
+
+              </div>
+
+              </div>
+
+
+            <!-- ENTRADA PARA VALOR DE APERTURA-->
+
+             <div class="form-group">             
+              <div class="input-group">
+              
+                <span class="input-group-addon"><i class="fa fa-usd"></i></span> 
+                <input type="text" class="form-control input-lg" name="editarValora"  id="editarValora"  >
+
+              </div>
+             </div>
+
+            <!-- ENTRADA PARA EL RESPONSABLE -->
+
+             <div class="form-group">             
+              <div class="input-group">
+              
+                <span class="input-group-addon"><i class="fa fa-key"></i></span> 
+                <input type="text" class="form-control input-lg" name="editarResponsable"  id="editarResponsable" >
+
+              </div>
+             </div>
+            
+            <!-- ENTRADA PARA HORA CIERRE -->
+
+             <div class="form-group">              
+              <div class="input-group">
+              
+                <span class="input-group-addon"><i class="fa fa-clock-o"></i></span> 
+                <input type="time" class="form-control input-lg" name="editarHorac" id="editarHorac" placeholder="Ingresar hora" >
+
+              </div>
+             </div>
+
+            <!-- ENTRADA PARA VALOR DE CIERRE -->
+             <div class="form-group">            
+              <div class="input-group">
+              
+                <span class="input-group-addon"><i class="fa fa-usd"></i></span> 
+                <input type="text" class="form-control input-lg" name="editarValorc"  id="editarValorc" >
+
+              </div>
+             </div>
+
+            <!-- ENTRADA PARA OBSERVACIONES -->
+
+             <div class="form-group">             
+              <div class="input-group">
+              
+                <span class="input-group-addon"><i class="fa fa-commenting"></i></span> 
+                <input type="text" class="form-control input-lg" name="editarObservacion"  id="editarObservacion" >
+
+              </div>
+             </div>
+            
+
+        <!--=====================================
+        PIE DEL MODAL
+        ======================================-->
+
+        <div class="modal-footer">
+
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
+
+          <button type="submit" class="btn btn-primary">Modificar</button>
+
+        </div>
+        
+
+      </form>
+
+      
+      <?php
+
+      $editarCajaGeneral = new ControladorCajaGeneral();
+      $editarCajaGeneral -> ctrEditarCajaGeneral();
+
+      ?> 
+
+    </div>
+
+  </div>
+
+</div>
+
+            
+
+
+
+
